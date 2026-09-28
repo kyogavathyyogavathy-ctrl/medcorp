@@ -1,0 +1,7 @@
+{
+  "name": "MedLink - B2B Doctor & Pharma Platform",
+  "description": "Enterprise B2B platform connecting verified doctors, hospitals, and pharmaceutical suppliers for medicine discovery, pricing comparison, quotation requests, and procurement.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
