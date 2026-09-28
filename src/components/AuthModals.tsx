@@ -45,13 +45,15 @@ export const DoctorAuthModal: React.FC<DoctorAuthModalProps> = ({
 
   // Registration success status
   const [justRegistered, setJustRegistered] = useState<Doctor | null>(null);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      alert('Passwords do not match.');
+      setAuthError('Passwords do not match. Please re-enter.');
       return;
     }
+    setAuthError(null);
 
     const newDoc = StorageService.registerDoctor({
       user_id: `user-${Date.now()}`,
@@ -227,6 +229,15 @@ export const DoctorAuthModal: React.FC<DoctorAuthModalProps> = ({
             ) : (
               /* REGISTRATION FORM */
               <form onSubmit={handleRegister} className="p-6 space-y-3.5 max-h-[70vh] overflow-y-auto">
+                {authError && (
+                  <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium flex items-center justify-between">
+                    <span>{authError}</span>
+                    <button type="button" onClick={() => setAuthError(null)} className="text-rose-500 hover:text-rose-700">
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
+
                 <div className="bg-amber-50 p-2.5 rounded-lg border border-amber-200 text-[11px] text-amber-800 flex items-start gap-1.5">
                   <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5" />
                   <span>

@@ -59,12 +59,13 @@ export const CompareSuppliersPage: React.FC<CompareSuppliersPageProps> = ({
   };
 
   const handleRequestQuotations = () => {
-    const selectedMeds = displayMedicines.filter(m => selectedSupplierIds.includes(m.company_id));
+    let selectedMeds = displayMedicines.filter(m => selectedSupplierIds.includes(m.company_id));
     if (selectedMeds.length === 0) {
-      alert('Please select at least one pharmaceutical supplier from the comparison table.');
-      return;
+      selectedMeds = displayMedicines;
     }
-    onRequestQuotationsMulti(selectedMeds);
+    if (selectedMeds.length > 0) {
+      onRequestQuotationsMulti(selectedMeds);
+    }
   };
 
   return (

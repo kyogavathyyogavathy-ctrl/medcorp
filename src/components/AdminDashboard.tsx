@@ -60,6 +60,8 @@ export const AdminDashboard: React.FC = () => {
   const activeRequests = requests.filter(r => r.status !== 'completed' && r.status !== 'cancelled').length;
   const completedRequests = requests.filter(r => r.status === 'completed').length;
 
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
+
   // Actions
   const handleVerifyDoctor = (id: string, status: 'verified' | 'rejected') => {
     StorageService.updateDoctorVerification(id, status);
@@ -70,8 +72,13 @@ export const AdminDashboard: React.FC = () => {
   };
 
   const handleDeleteMedicine = (id: string, name: string) => {
-    if (window.confirm(`Are you sure you want to remove ${name} from platform catalog?`)) {
-      StorageService.deleteMedicine(id);
+    setDeleteTarget({ id, name });
+  };
+
+  const handleConfirmDeleteMedicine = () => {
+    if (deleteTarget) {
+      StorageService.deleteMedicine(deleteTarget.id);
+      setDeleteTarget(null);
     }
   };
 
@@ -521,6 +528,39 @@ export const AdminDashboard: React.FC = () => {
                 })}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Medicine Confirmation Modal */}
+      {deleteTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs">
+          <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-sm w-full p-6 space-y-4 animate-in fade-in zoom-in-95">
+            <div className="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center">
+              <AlertTriangle className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 text-base">Remove Medicine Listing?</h3>
+              <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                Are you sure you want to remove <strong>{deleteTarget.name}</strong> from the active platform catalog? Doctors will no longer be able to discover or request quotations for this formulation.
+              </p>
+            </div>
+            <div className="flex items-center justify-end gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setDeleteTarget(null)}
+                className="px-3.5 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDeleteMedicine}
+                className="px-4 py-2 text-xs font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded-lg shadow-sm transition"
+              >
+                Delete Medicine
+              </button>
+            </div>
           </div>
         </div>
       )}

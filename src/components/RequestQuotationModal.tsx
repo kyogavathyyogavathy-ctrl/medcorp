@@ -63,6 +63,7 @@ export const RequestQuotationModal: React.FC<RequestQuotationModalProps> = ({
 
   // Success state
   const [submittedRequest, setSubmittedRequest] = useState<MedicineRequest | null>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   const toggleCompanySelection = (companyId: string) => {
     setSelectedCompanyIds(prev =>
@@ -74,14 +75,15 @@ export const RequestQuotationModal: React.FC<RequestQuotationModalProps> = ({
     e.preventDefault();
 
     if (selectedCompanyIds.length === 0) {
-      alert('Please select at least one pharmaceutical supplier to send your quotation request.');
+      setValidationError('Please select at least one pharmaceutical supplier to send your quotation request.');
       return;
     }
 
     if (requiredQuantity <= 0) {
-      alert('Please specify a valid required quantity.');
+      setValidationError('Please specify a valid required quantity.');
       return;
     }
+    setValidationError(null);
 
     const newReq = StorageService.createRequest({
       doctor_id: doctor.id,
@@ -177,6 +179,15 @@ export const RequestQuotationModal: React.FC<RequestQuotationModalProps> = ({
           /* REQUIREMENT FORM */
           <form onSubmit={handleSubmit} className="p-6 space-y-5 max-h-[80vh] overflow-y-auto">
             
+            {validationError && (
+              <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium flex items-center justify-between">
+                <span>{validationError}</span>
+                <button type="button" onClick={() => setValidationError(null)} className="text-rose-500 hover:text-rose-700">
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
+
             {/* Doctor Info Badge */}
             <div className="bg-blue-50/70 p-3 rounded-xl border border-blue-100 flex items-center justify-between text-xs text-blue-900">
               <div>

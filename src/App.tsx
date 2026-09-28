@@ -171,8 +171,8 @@ export default function App() {
   const doctor = StorageService.getDoctorById(activeDoctorId) || StorageService.getDoctors()[0];
   const pharma = StorageService.getPharmaCompanyById(activePharmaId) || StorageService.getPharmaCompanies()[0];
 
-  const currentUserId = currentRole === 'doctor' ? doctor.id : currentRole === 'pharma' ? pharma.id : 'admin';
-  const currentUserName = currentRole === 'doctor' ? doctor.name : currentRole === 'pharma' ? pharma.company_name : 'Admin Compliance';
+  const currentUserId = currentRole === 'doctor' ? (doctor?.id || 'doc-001') : currentRole === 'pharma' ? (pharma?.id || 'pharma-001') : 'admin';
+  const currentUserName = currentRole === 'doctor' ? (doctor?.name || 'Dr. Arjun Mehta') : currentRole === 'pharma' ? (pharma?.company_name || 'Apex Formulations') : 'Admin Compliance';
   const resolvedRole: UserRole = currentRole === 'pharma' ? 'pharma' : currentRole === 'admin' ? 'admin' : 'doctor';
 
   return (

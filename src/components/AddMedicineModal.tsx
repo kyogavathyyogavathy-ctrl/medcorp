@@ -39,6 +39,7 @@ export const AddMedicineModal: React.FC<AddMedicineModalProps> = ({
   const [description, setDescription] = useState('');
   const [storageCondition, setStorageCondition] = useState('Store below 25°C in a dry place.');
   const [regulatoryApproval, setRegulatoryApproval] = useState('WHO-GMP & CDSCO Approved');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const categories = [
     'Analgesics & Antipyretics',
@@ -55,9 +56,10 @@ export const AddMedicineModal: React.FC<AddMedicineModalProps> = ({
 
   const handleSave = (status: 'published' | 'draft') => {
     if (!medicineName || !composition || !strength) {
-      alert('Please fill in required fields: Medicine Name, Active Composition, and Strength.');
+      setErrorMessage('Please fill in required fields: Medicine Name, Active Composition, and Strength.');
       return;
     }
+    setErrorMessage(null);
 
     const newMed = StorageService.addMedicine({
       company_id: pharma.id,
@@ -81,7 +83,6 @@ export const AddMedicineModal: React.FC<AddMedicineModalProps> = ({
       is_verified_supplier: pharma.verification_status === 'verified',
     });
 
-    alert(`Medicine "${newMed.medicine_name}" saved as ${status}.`);
     onSuccess(newMed);
   };
 
@@ -110,6 +111,15 @@ export const AddMedicineModal: React.FC<AddMedicineModalProps> = ({
 
         <form onSubmit={(e) => { e.preventDefault(); handleSave('published'); }} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
           
+          {errorMessage && (
+            <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium flex items-center justify-between">
+              <span>{errorMessage}</span>
+              <button type="button" onClick={() => setErrorMessage(null)} className="text-rose-500 hover:text-rose-700">
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
               <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Medicine / Brand Name *</label>

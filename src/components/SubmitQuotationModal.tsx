@@ -50,6 +50,7 @@ export const SubmitQuotationModal: React.FC<SubmitQuotationModalProps> = ({
   const [additionalNotes, setAdditionalNotes] = useState<string>(
     'Direct dispatch from certified central warehouse. WHO-GMP Batch COA included with shipment.'
   );
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   const totalPrice = quotedPrice * availableQuantity;
 
@@ -57,9 +58,10 @@ export const SubmitQuotationModal: React.FC<SubmitQuotationModalProps> = ({
     e.preventDefault();
 
     if (quotedPrice <= 0 || availableQuantity <= 0) {
-      alert('Please enter valid commercial quotation figures.');
+      setValidationError('Please enter valid commercial quotation figures (price and quantity must be greater than zero).');
       return;
     }
+    setValidationError(null);
 
     StorageService.submitQuotation({
       request_id: request.id,
@@ -77,7 +79,6 @@ export const SubmitQuotationModal: React.FC<SubmitQuotationModalProps> = ({
       additional_notes: additionalNotes,
     });
 
-    alert(`Formal quotation submitted for Request ${request.id}. Dr. ${request.doctor_name} has been notified.`);
     onSuccess();
   };
 
@@ -128,6 +129,14 @@ export const SubmitQuotationModal: React.FC<SubmitQuotationModalProps> = ({
 
         {/* Quotation Submission Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          {validationError && (
+            <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium flex items-center justify-between">
+              <span>{validationError}</span>
+              <button type="button" onClick={() => setValidationError(null)} className="text-rose-500 hover:text-rose-700">
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
